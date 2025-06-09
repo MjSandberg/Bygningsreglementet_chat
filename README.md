@@ -15,7 +15,7 @@ A chat interface for querying the Danish Building Regulations (Bygningsreglement
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/MjSandberg/Bygningsreglementet_chat
 cd BygningReglament_Bot
 ```
 
