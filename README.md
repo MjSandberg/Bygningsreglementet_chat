@@ -1,77 +1,183 @@
 # Bygningsreglementet Chat Bot
 
-A chat interface for querying the Danish Building Regulations (Bygningsreglementet) using RAG (Retrieval Augmented Generation) and LLM technology.
+A chat interface for querying the Danish Building Regulations (Bygningsreglementet) using RAG (Retrieval Augmented Generation).
 
 ## Features
 
-- Web scraping of Bygningsreglementet content
-- Local data storage and caching
-- Semantic search using FAISS and BM25
-- Interactive chat interface using Dash
-- Multilingual support through SentenceTransformer
-- LLM-powered responses through OpenRouter API
+- **Web scraping** of Bygningsreglementet content with robust error handling
+- **Local data storage** and caching with configurable paths
+- **Hybrid search** using FAISS (semantic) and BM25 (keyword-based) retrieval
+- **Interactive chat interface** using Dash with responsive design
+- **Multilingual support** through SentenceTransformer models
+- **LLM-powered responses** through OpenRouter API
+- **Comprehensive logging** and error handling
+- **Modular architecture** with clear separation of concerns
+- **Type hints** throughout the codebase for better maintainability
 
-## Setup
+## Quick Start
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/MjSandberg/Bygningsreglementet_chat
-cd BygningReglament_Bot
+cd Bygningsreglementet_chat
 ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 ```bash
-pip install -r requirements.txt
+# Using uv (recommended)
+uv sync
+
+# Or using pip
+pip install -e .
 ```
 
-3. Set up environment variables:
+3. **Set up environment variables:**
 ```bash
-cp .env.example .env
 # Edit .env with your OpenRouter API key
+echo "OPENROUTER_API_KEY=your_api_key_here" > .env
 ```
 
-## Usage
-
-1. First time setup (scrapes and processes data):
+4. **Run the application:**
 ```bash
-python scraper.py
-```
+# Using the installed script
+python main.py
 
-2. Run the chat interface:
-```bash
-python app.py
+# Or directly
+python -m src.ui.app
 ```
 
 The application will be available at `http://localhost:8050`
 
+## Usage
+
+### First Time Setup
+
+If no data exists, the application will automatically scrape the data on first run. You can also manually scrape:
+
+```bash
+# Scrape data manually
+python scraper_cli.py
+
+# Force rescraping even if data exists
+python scraper_cli.py --force
+
+# Enable debug logging
+python scraper_cli.py --debug
+```
+
+### Running the Chat Interface
+
+```bash
+# Run with default settings
+python main.py
+
+# Run with debug mode
+DEBUG=true python main.py
+
+# Run on different port
+PORT=8080 python main.py
+```
+
 ## Project Structure
 
-- `app.py` - Main Dash application and chat interface
-- `scraper.py` - Web scraping and data processing
-- `rag.py` - Retrieval and generation components
-- `bygningsreglementet_data.json` - Cached content data
-- `faiss_index.bin` - FAISS similarity search index
-- `bm25.pkl` - BM25 search index
+```
+├── src/                          # Main source code
+│   ├── config.py                 # Configuration management
+│   ├── scraper/                  # Web scraping components
+│   │   ├── __init__.py
+│   │   └── web_scraper.py        # Main scraper class
+│   ├── rag/                      # RAG system components
+│   │   ├── __init__.py
+│   │   ├── retriever.py          # Document retrieval
+│   │   └── generator.py          # Response generation
+│   ├── ui/                       # User interface
+│   │   ├── __init__.py
+│   │   └── app.py                # Dash application
+│   └── utils/                    # Utility functions
+│       ├── __init__.py
+│       ├── logging.py            # Logging configuration
+│       └── text_processing.py   # Text processing utilities
+├── data/                         # Data storage (created automatically)
+│   ├── bygningsreglementet_data.json
+│   ├── faiss_index.bin
+│   └── bm25.pkl
+├── logs/                         # Application logs (created automatically)
+├── main.py                       # Main application entry point
+├── scraper_cli.py               # CLI scraper script
+├── pyproject.toml               # Project configuration
+├── .env                         # Environment variables
+└── README.md                    # This file
+```
+
+## Configuration
+
+The application uses environment variables for configuration:
+
+- `OPENROUTER_API_KEY` - Your OpenRouter API key (required)
+- `DEBUG` - Enable debug mode (default: false)
+- `PORT` - Application port (default: 8050)
+- `HOST` - Application host (default: 127.0.0.1)
+
+Additional configuration can be modified in `src/config.py`.
+
+## Architecture
+
+### RAG System
+
+The RAG (Retrieval Augmented Generation) system combines:
+
+1. **Semantic Search** (FAISS) - Uses sentence transformers for semantic similarity
+2. **Keyword Search** (BM25) - Traditional keyword-based search
+3. **Hybrid Scoring** - Combines both approaches with configurable weights
+4. **LLM Generation** - Uses OpenRouter API for response generation
+
+### Error Handling
+
+- Comprehensive error handling throughout the application
+- Graceful degradation when components fail
+- Detailed logging for debugging and monitoring
+- User-friendly error messages in the UI
+
+## Development
+
+### Testing
+
+```bash
+# Run type checking
+mypy src/
+
+# Run linting
+ruff check src/
+
+# Run formatting
+ruff format src/
+```
 
 ## Dependencies
 
-- dash
-- dash-bootstrap-components
-- beautifulsoup4
-- sentence-transformers
-- faiss-cpu
-- rank_bm25
-- openai
-- numpy
-- requests
-- torch
+Core dependencies:
+- `dash` - Web application framework
+- `dash-bootstrap-components` - UI components
+- `beautifulsoup4` - Web scraping
+- `sentence-transformers` - Semantic embeddings
+- `faiss-cpu` - Vector similarity search
+- `rank-bm25` - Keyword search
+- `openai` - LLM API client
+- `python-dotenv` - Environment variable management
 
-## Environment Variables
+## Troubleshooting
 
-- `OPENROUTER_API_KEY` - Your OpenRouter API key for LLM access
+### Common Issues
 
-## Notes
+1. **Missing API Key**: Ensure `OPENROUTER_API_KEY` is set in `.env`
+2. **Port Already in Use**: Change the port with `PORT=8080 python main.py`
+3. **Memory Issues**: Reduce chunk size in `src/config.py`
+4. **Slow Startup**: Indices are being created; subsequent runs will be faster
 
-- The first run will take some time to scrape and process the data
-- Subsequent runs will use cached data unless forced to rescrape
-- The FAISS index and BM25 model are saved locally for faster startup
+### Logs
+
+Check the logs in the `logs/` directory for detailed error information.
+
+## License
+
+This project is licensed under the MIT License.

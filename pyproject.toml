@@ -1,0 +1,31 @@
+[project]
+name = "bygningsreglementet-chat"
+version = "0.2.0"
+description = "A chat interface for querying the Danish Building Regulations using RAG and LLM technology"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "dash>=3.0.4",
+    "dash-bootstrap-components>=2.0.3",
+    "faiss-cpu>=1.11.0",
+    "langchain-text-splitters>=0.3.8",
+    "numpy>=2.3.0",
+    "openai>=1.86.0",
+    "python-dotenv>=1.1.0",
+    "rank-bm25>=0.2.2",
+    "requests>=2.32.4",
+    "sentence-transformers>=4.1.0",
+    "torch>=2.7.1",
+]
+
+[project.scripts]
+bygningsreglementet-chat = "main:main"
+scrape-data = "scraper_cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
