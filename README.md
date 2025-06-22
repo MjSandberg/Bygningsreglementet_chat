@@ -1,18 +1,23 @@
 # Bygningsreglementet Chat Bot
 
-A chat interface for querying the Danish Building Regulations (Bygningsreglementet) using RAG (Retrieval Augmented Generation).
+A chat interface for querying the Danish Building Regulations (Bygningsreglementet) using an intelligent agentic RAG (Retrieval Augmented Generation) system.
 
 ## Features
 
+### Core RAG Capabilities
 - **Web scraping** of Bygningsreglementet content with robust error handling
 - **Local data storage** and caching with configurable paths
 - **Hybrid search** using FAISS (semantic) and BM25 (keyword-based) retrieval
 - **Interactive chat interface** using Dash with responsive design
 - **Multilingual support** through SentenceTransformer models
 - **LLM-powered responses** through OpenRouter API
-- **Comprehensive logging** and error handling
-- **Modular architecture** with clear separation of concerns
-- **Type hints** throughout the codebase for better maintainability
+
+### Agentic
+- **Query Routing** - Automatically determines the best approach for each query
+- **Web Search** - Searches external sources when local knowledge is insufficient
+- **Context Sufficiency Evaluation** - Ensures adequate information before generating responses
+- **Multi-Agent Coordination** - Orchestrates specialized agents for optimal results
+
 
 ## Quick Start
 
@@ -122,9 +127,19 @@ Additional configuration can be modified in `src/config.py`.
 
 ## Architecture
 
-### RAG System
+### Agentic RAG System
 
-The RAG (Retrieval Augmented Generation) system combines:
+The system uses an intelligent multi-agent architecture that automatically determines the best approach for each query:
+
+1. **Orchestrator Agent** - Central coordinator that analyzes queries and manages agent interactions
+2. **Knowledge Retriever Agent** - Searches the local building regulations database
+3. **Web Search Agent** - Searches external sources when local knowledge is insufficient
+4. **Context Evaluator Agent** - Determines if gathered information is sufficient for response generation
+5. **Generator Agent** - Creates responses with source attribution and quality validation
+
+### Traditional RAG Components
+
+The underlying RAG system combines:
 
 1. **Semantic Search** (FAISS) - Uses sentence transformers for semantic similarity
 2. **Keyword Search** (BM25) - Traditional keyword-based search
@@ -143,6 +158,9 @@ The RAG (Retrieval Augmented Generation) system combines:
 ### Testing
 
 ```bash
+# Test the agentic system
+python test_agentic_system.py
+
 # Run type checking
 mypy src/
 
