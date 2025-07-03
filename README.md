@@ -1,4 +1,4 @@
-# Bygningsreglementet Chat Bot
+# Bygningsreglementet Agentic Rag
 
 A chat interface for querying the Danish Building Regulations (Bygningsreglementet) using an intelligent agentic RAG (Retrieval Augmented Generation) system.
 
